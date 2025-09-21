@@ -1,0 +1,213 @@
+/* Components */
+.ava {
+  display: inline-block;
+  font-size: 0;
+  object-fit: cover;
+  overflow: hidden;
+  position: relative;
+}
+
+.ava[aria-label]::after {
+  position: absolute;
+  inset: 0;
+  content: attr(aria-label);
+  display: grid;
+  place-items:  center;
+  font-size: var(--fs);
+  font-weight: 500;
+  background-color: var(--bg);
+}
+
+.ava-loader {
+  background: #ddd;
+  cursor: progress;
+}
+
+.ava-light {
+  color: #fff;
+}
+
+.ava-dark {
+  color: #343a40;
+}
+
+.md-view ul {
+  list-style: disc;
+  padding-left: 1rem;
+}
+
+.md-view pre {
+  width: 100%;
+  overflow: auto;
+}
+
+.md-view a {
+  color: #1677ff;
+}
+
+.md-view .h1,
+.md-view .h2,
+.md-view .h3,
+.md-view .h4,
+.md-view .h5,
+.md-view .h6,
+.md-view h1,
+.md-view h2,
+.md-view h3,
+.md-view h4,
+.md-view h5,
+.md-view h6 {
+  color: inherit;
+  margin-top: 0;
+  margin-bottom: .5rem;
+  font-weight: 500;
+  line-height: 1.2
+}
+
+.md-view .h1,
+.md-view h1 {
+  font-size: calc(1.375rem + 1.5vw)
+}
+
+@media (width>=1200px) {
+  .md-view .h1,
+  .md-view h1 {
+    font-size: 2.5rem
+  }
+}
+
+.md-view .h2,
+.md-view h2 {
+  font-size: calc(1.325rem + .9vw)
+}
+
+@media (width>=1200px) {
+  .md-view .h2,
+  .md-view h2 {
+    font-size: 2rem
+  }
+}
+
+.md-view .h3,
+.md-view h3 {
+  font-size: calc(1.3rem + .6vw)
+}
+
+@media (width>=1200px) {
+  .md-view .h3,
+  .md-view h3 {
+    font-size: 1.75rem
+  }
+}
+
+.md-view .h4,
+.md-view h4 {
+  font-size: calc(1.275rem + .3vw)
+}
+
+@media (width>=1200px) {
+  .md-view .h4,
+  .md-view h4 {
+    font-size: 1.5rem
+  }
+}
+
+.md-view .h5,
+.md-view h5 {
+  font-size: 1.25rem
+}
+
+.md-view .h6,
+.md-view h6 {
+  font-size: 1rem
+}
+
+.md-view p {
+  margin-top: 0;
+  margin-bottom: .5rem;
+}
+
+.md-view .table {
+  vertical-align: top;
+  border-color: #d1d5db;
+}
+
+.md-view .table > :not(caption) > * {
+  border-width: 1px;
+}
+
+.md-view .table > :not(caption) > * > * {
+  background-color: #fff;
+  border-bottom-width: 1px;
+  padding: .5rem;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-sans: ui-sans-serif, system-ui, sans-serif;
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 240 5.9% 10%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 10% 3.9%;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+    --radius: 0.5rem;
+  }
+  .dark {
+    --background: 240 10% 3.9%;
+    --foreground: 0 0% 98%;
+    --card: 240 10% 3.9%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 10% 3.9%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 240 5.9% 10%;
+    --secondary: 240 3.7% 15.9%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 3.7% 15.9%;
+    --muted-foreground: 240 5% 64.9%;
+    --accent: 240 3.7% 15.9%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 3.7% 15.9%;
+    --input: 240 3.7% 15.9%;
+    --ring: 240 4.9% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
