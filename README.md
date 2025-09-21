@@ -18,12 +18,11 @@ Search for GitHub users and view repositories. Built with Vite, TypeScript, @tan
 - Vitest.
 
 ## Setup
-
 Requirements: Node 18+, npm or pnpm
 
-```bash
 # clone
-git clone <repo-url>
+```bash
+git clone https://github.com/M-Husein/github-explorer.git
 cd github-explorer
 ```
 
