@@ -68,11 +68,20 @@ export default function Page(){
     staleTime: 1000 * 60 * 2,
   });
 
-  if (userRepo.isLoading || readme.isLoading || userRepo.error || readme.error) {
+  if (userRepo.isLoading || userRepo.error) {
     return (
       <div className="min-h-dvh grid place-content-center">
-        {userRepo.error || readme.error
-          ? <p>Error: {userRepo.error?.message || readme.error?.message}</p>
+        {userRepo.error
+          ? (
+            <div>
+              <p>Error: {userRepo.error?.message}</p>
+              {renderButtonSearch()}
+              {" "}
+              <Button onClick={() => userRepo.refetch()}>
+                Reload
+              </Button>
+            </div>
+          )
           : <Loading />
         }
       </div>
@@ -276,7 +285,7 @@ export default function Page(){
           />
         )
         :
-        renderButtonSearch("fixed bottom-2 right-2")
+        renderButtonSearch("fixed bottom-2 right-2 z-10")
       }
     </div>
   );
