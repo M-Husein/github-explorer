@@ -24,8 +24,8 @@ export const MarkdownView = ({
       <a
         {...props}
         className={cn(className, linkClass)}
-        target={isExternal ? "_blank" : undefined}
-        rel={isExternal ? "noopener noreferrer" : undefined}
+        target={isExternal ? "_blank" : void 0}
+        rel={isExternal ? "noopener noreferrer" : void 0}
       />
     );
   }
@@ -73,7 +73,7 @@ export const MarkdownView = ({
   const img = ({ node, alt, className, ...props }: any) => (
     <img
       {...props}
-      alt={alt || "i"}
+      alt={alt || ""}
       loading="lazy"
       decoding="async"
       draggable={false}
@@ -89,7 +89,7 @@ export const MarkdownView = ({
   );
 
   const table = ({ node, className, ...props }: any) => (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto mb-4">
       <table
         {...props}
         className={cn("table w-full mb-4", className, tableClass)}

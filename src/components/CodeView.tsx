@@ -36,13 +36,12 @@ export const CodeView = ({
   }
 
   return (
-    <div className={cn(prefixClass, etc.className, !copyMessage && "hide-child")}>
+    <div className={cn(prefixClass, etc.className)}>
       <Button
-        className="chide absolute top-1 right-1 z-1"
+        className="absolute top-1 right-1 z-1"
         tabIndex={-1}
         aria-label="Copy to clipboard"
         disabled={copyMessage}
-        title={copyMessage ? 'Copied' : 'Copy'}
         onClick={copyToClipboard}
       >
         {copyMessage ? '✅' : '📋'}
