@@ -45,8 +45,9 @@ export const UserCard = ({ user }: UserCardProps) => {
 
   // Trigger fetch when accordion opens
   const handleOpenChange = () => {
-    if (!open && !reposQuery.isFetching) {
+    if (!open && !reposQuery.isFetching && !userDetail.isFetching) {
       reposQuery.refetch();
+      userDetail.refetch();
     }
     setOpen(prev => !prev);
   }
@@ -116,7 +117,7 @@ export const UserCard = ({ user }: UserCardProps) => {
             </p>
 
             <div className="mt-4 space-y-2 text-sm">
-              {userDetail.isLoading && renderSkeleton()}
+              {(userDetail.isLoading || userDetail.isFetching) && renderSkeleton()}
 
               {userDetail.data && (
                 <>
