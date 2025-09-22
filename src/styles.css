@@ -38,6 +38,13 @@
   margin-bottom: 1rem;
 }
 
+.md-view ol ol, 
+.md-view ol ul, 
+.md-view ul ol, 
+.md-view ul ul {
+  margin-bottom: 0;
+}
+
 .md-view ol {
   list-style: decimal;
   padding-left: 1rem;
