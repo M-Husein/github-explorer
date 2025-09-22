@@ -6,11 +6,23 @@ import { Select } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AccordionItem, AccordionTrigger, AccordionContent } from "@/components/ui/accordion";
 import { RepoList } from "./RepoList";
-import { type GitHubUser, fetchUserRepos } from "@/api/github";
+import { numShort } from "@/lib/utils";
+import { type GitHubUser, fetchUserRepos, getUser } from "@/api/github";
 
 interface UserCardProps {
   user: GitHubUser
 }
+
+const renderSkeleton = () => (
+  <div className="space-y-3">
+    {[...Array(3)].map((_, i) => (
+      <div key={i} className="space-y-2">
+        <Skeleton className="h-5 w-1/3" />
+        <Skeleton className="h-4 w-2/3" />
+      </div>
+    ))}
+  </div>
+);
 
 export const UserCard = ({ user }: UserCardProps) => {
   const [open, setOpen] = useState<boolean>(false);
@@ -20,6 +32,13 @@ export const UserCard = ({ user }: UserCardProps) => {
   const reposQuery = useQuery({
     queryKey: ["repos", user.login],
     queryFn: () => fetchUserRepos(user.login),
+    enabled: open,
+    staleTime: 1000 * 60 * 5,
+  });
+
+  const userDetail = useQuery({
+    queryKey: ["user", user.login],
+    queryFn: () => getUser(user.login),
     enabled: open,
     staleTime: 1000 * 60 * 5,
   });
@@ -49,7 +68,7 @@ export const UserCard = ({ user }: UserCardProps) => {
       className="border"
     >
       <AccordionTrigger
-        className={"bg-white hover:bg-orange-50 sticky top-[52px] z-2" + (open ? " border-b" : "")}
+        className={"bg-white hover:bg-orange-50 sticky top-[52px] z-1" + (open ? " border-b" : "")}
         onClick={handleOpenChange}
       >
         <div className="flex items-center">
@@ -66,7 +85,7 @@ export const UserCard = ({ user }: UserCardProps) => {
       <AccordionContent>
         <div className="grid grid-cols-1 md:grid-cols-3">
           {/* Left column: User profile */}
-          <div className="bg-gray-50 p-4 flex flex-col items-center md:items-start">
+          <section className="bg-gray-50 p-4 flex flex-col items-center md:items-start">
             <Avatar
               alt={user.login}
               src={user.avatar_url}
@@ -79,37 +98,79 @@ export const UserCard = ({ user }: UserCardProps) => {
                 href={user.html_url} 
                 target="_blank" 
                 rel="noopener noreferrer"
+                className="hover:text-blue-600"
               >
                 {user.name ?? user.login}
               </a>
             </h3>
 
-            <p className="text-muted-foreground">@{user.login}</p>
+            <p>
+              <a 
+                href={user.html_url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:text-blue-600"
+              >
+                @{user.login}
+              </a>
+            </p>
 
-            {user.bio && (
-              <p className="text-sm mt-2 text-center md:text-left">{user.bio}</p>
-            )}
+            <div className="mt-4 space-y-2 text-sm">
+              {userDetail.isLoading && renderSkeleton()}
 
-            <div className="mt-4 space-y-1 text-sm text-muted-foreground">
-              {user.followers != null && (
-                <p>👥 {user.followers.toLocaleString()} followers</p>
-              )}
-              {user.location && <p>📍 {user.location}</p>}
-              {user.blog && (
-                <p>
-                  🔗{" "}
-                  <a
-                    href={user.blog.startsWith("http") ? user.blog : `https://${user.blog}`}
-                    className="text-blue-600 hover:underline"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {user.blog}
-                  </a>
-                </p>
+              {userDetail.data && (
+                <>
+                  {!!userDetail.data?.bio && <p>{userDetail.data.bio}</p>}
+
+                  {typeof userDetail.data?.followers === 'number' && (
+                    <p>
+                      👥 {numShort(userDetail.data.followers)} followers ~ {numShort(userDetail.data.following)} following
+                    </p>
+                  )}
+
+                  {!!userDetail.data?.location && (
+                    <p>
+                      📍 {userDetail.data.location}
+                    </p>
+                  )}
+
+                  {!!userDetail.data?.email && (
+                    <p>
+                      <a href={"mailto:" + userDetail.data.email}>
+                        ✉️ {userDetail.data.email}
+                      </a>
+                    </p>
+                  )}
+                  
+                  {!!userDetail.data?.blog && (
+                    <p>
+                      🔗{" "}
+                      <a
+                        href={userDetail.data.blog.startsWith("http") ? userDetail.data.blog : `https://${userDetail.data.blog}`}
+                        className="text-blue-600 hover:underline"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {userDetail.data.blog}
+                      </a>
+                    </p>
+                  )}
+
+                  {!!userDetail.data?.twitter_username && (
+                    <p>
+                      <a 
+                        href={"https://twitter.com/" + userDetail.data.twitter_username} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                      >
+                        @{userDetail.data.twitter_username}
+                      </a>
+                    </p>
+                  )}
+                </>
               )}
             </div>
-          </div>
+          </section>
 
           {/* Right column: Repos */}
           <div className="md:col-span-2 p-3">
@@ -135,16 +196,7 @@ export const UserCard = ({ user }: UserCardProps) => {
               />
             </div>
 
-            {reposQuery.isLoading && (
-              <div className="space-y-3">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="space-y-2">
-                    <Skeleton className="h-5 w-1/3" />
-                    <Skeleton className="h-4 w-2/3" />
-                  </div>
-                ))}
-              </div>
-            )}
+            {reposQuery.isLoading && renderSkeleton()}
 
             {reposQuery.isError && (
               <p className="text-red-500">

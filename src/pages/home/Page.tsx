@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Accordion } from "@/components/ui/accordion";
 import { SearchForm } from "@/components/SearchForm";
@@ -7,7 +8,10 @@ import { Footer } from "@/components/Footer";
 import { searchUsers } from "@/api/github";
 
 export default function Page(){
-  const [query, setQuery] = useState<string>("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchPayload = searchParams.get('q') || '';
+
+  const [query, setQuery] = useState<string>(searchPayload);
 
   const usersQuery = useQuery({
     queryKey: ["users", query],
@@ -15,6 +19,11 @@ export default function Page(){
     enabled: !!query.trim(),
     staleTime: 1000 * 60 * 2,
   });
+
+  const handleSearch = (value: string) => {
+    setQuery(value);
+    setSearchParams(value ? { q: value } : {}, { replace: true });
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
@@ -37,7 +46,8 @@ export default function Page(){
         <SearchForm
           loading={usersQuery.isFetching}
           disabled={usersQuery.isFetching}
-          onSearch={setQuery}
+          value={query}
+          onSearch={handleSearch}
         />
 
         <section>

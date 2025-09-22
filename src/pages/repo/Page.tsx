@@ -96,7 +96,7 @@ export default function Page(){
   })();
 
   return (
-    <div className="max-w-screen-lg mx-auto">
+    <div className="max-w-screen-lg mx-auto min-h-dvh relative">
       {!!detail && (
         <article className="p-4">
           <h1 className="text-3xl font-normal! break-all">
@@ -285,7 +285,7 @@ export default function Page(){
           />
         )
         :
-        renderButtonSearch("fixed bottom-2 right-2 z-10")
+        renderButtonSearch("absolute bottom-2 right-2 z-10")
       }
     </div>
   );

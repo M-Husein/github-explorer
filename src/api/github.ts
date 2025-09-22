@@ -9,9 +9,12 @@ export type GitHubUser = {
   html_url: string
   name: string
   followers?: number
+  following: number
   bio?: string
-  location: string
-  blog: string
+  location?: string
+  blog?: string
+  email?: string
+  twitter_username?: string
 }
 
 export type GitHubRepo = {
@@ -45,18 +48,26 @@ type GitHubReadme = {
   download_url: string
 }
 
+const headers = {
+  Authorization: "token " + import.meta.env.VITE_GITHUB_TOKEN
+};
+
 export const searchUsers = async (q: string, limit = 5): Promise<GitHubUser[]> => {
   if (!q) return [];
-  const res = await request(GITHUB_BASE + '/search/users', { query: { q, per_page: limit } });
+  const res = await request(GITHUB_BASE + '/search/users', { headers, query: { q, per_page: limit } });
   return (res.items || []) as GitHubUser[];
 }
 
+export const getUser = async (username: string): Promise<GitHubUser> => {
+  return await request(`${GITHUB_BASE}/users/${username}`, { headers });
+}
+
 export const getUserRepo = async (username: string, repo: string): Promise<GitHubRepo> => {
-  return await request(`${GITHUB_BASE}/repos/${username}/${repo}`);
+  return await request(`${GITHUB_BASE}/repos/${username}/${repo}`, { headers });
 }
 
 export const getReadme = async (username: string, repo: string): Promise<GitHubReadme> => {
-  return await request(`${GITHUB_BASE}/repos/${username}/${repo}/readme`);
+  return await request(`${GITHUB_BASE}/repos/${username}/${repo}/readme`, { headers });
 }
 
 export const fetchUserRepos = async (username: string, perPage = 100): Promise<GitHubRepo[]> => {
@@ -64,7 +75,7 @@ export const fetchUserRepos = async (username: string, perPage = 100): Promise<G
   const all: GitHubRepo[] = [];
 
   while (true) {
-    const items = (await request(`${GITHUB_BASE}/users/${username}/repos`, { query: { per_page: perPage, page } })) as GitHubRepo[];
+    const items = (await request(`${GITHUB_BASE}/users/${username}/repos`, { headers, query: { per_page: perPage, page } })) as GitHubRepo[];
     if (!items || items.length === 0) break;
     all.push(...items);
     if (items.length < perPage) break;

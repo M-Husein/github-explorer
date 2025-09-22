@@ -9,15 +9,17 @@ import { Loading } from "@/components/Loading";
 interface SearchFormProps {
   loading?: boolean
   disabled?: boolean
+  value: string
   onSearch: (query: string) => void
 }
 
 export const SearchForm = ({ 
   loading,
   disabled,
+  value,
   onSearch
 }: SearchFormProps) => {
-  const [query, setQuery] = useState<string>("");
+  const [query, setQuery] = useState<string>(value);
   const [listening, setListening] = useState<boolean>(false);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
 
@@ -25,7 +27,7 @@ export const SearchForm = ({
     e.preventDefault();
 
     let trimValue = query.trim();
-    if (trimValue) {
+    if(trimValue){
       onSearch(trimValue);
     }else{
       const input = (e.target as HTMLFormElement).elements[1] as HTMLInputElement;
@@ -37,20 +39,20 @@ export const SearchForm = ({
 
   const handleInputChange = (val: string) => {
     setQuery(val);
-    if (!val.trim()) {
+    if(!val.trim()){
       onSearch("");
     }
   }
 
   const toggleListening = () => {
-    if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
+    if(!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)){
       toast.error("Not supported", {
         description: "Speech recognition is not available in this browser.",
       });
       return;
     }
 
-    if (listening) {
+    if(listening){
       recognitionRef.current?.stop();
       setListening(false);
       return;
@@ -97,7 +99,7 @@ export const SearchForm = ({
   return (
     <Form
       role="search"
-      className="bg-white sticky top-0 z-1 p-2"
+      className="bg-white sticky top-0 z-2 p-2"
       disabled={disabled}
       fieldsetProps={{
         className: "border-0 flex gap-1 w-full max-w-md mx-auto" 
